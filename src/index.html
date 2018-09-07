@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Holistic</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="css/" href="favicon.ico">
+
+
+  <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/docs.theme.min.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/owl.carousel.min.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/owl.theme.default.min.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
+</head>
+<body>
+  <!--
+  <div id="preloader">
+      <div id="loading-animation">&nbsp;</div>
+  </div>
+  -->
+  <app-root></app-root>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/owl.carousel.js"></script>
+  <!-- <script src="node_modules/jquery/dist/jquery.js"></script> -->
+  <!-- <script src="../node_modules/owl.carousel/dist/owl.carousel.js"></script> -->
+  <script src="assets/js/bootstrap.js"></script>
+  <!-- <script src="assets/js/bootstrap.min.js"></script> -->
+  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFrbM080e4ICOOXeWkO3Rlfj_GH9N4r9w&callback=fireMap">
+  </script>
+
+  <script>
+  /*
+    $(window).load(function() {
+
+      var preloaderDelay = 350,
+          preloaderFadeOutTime = 800;
+
+      function hidePreloader() {
+          var loadingAnimation = $('#loading-animation'),
+              preloader = $('#preloader');
+          //initialize();
+          initMap();
+          loadingAnimation.fadeOut();
+          preloader.delay(preloaderDelay).fadeOut(preloaderFadeOutTime);
+      }
+
+      hidePreloader();
+    });
+    */
+    $(document).ready(function() {
+    $('.owl-carousel3').owlCarousel({
+      loop: true,
+      margin: 10,
+      responsiveClass: true,
+      responsive: {
+        0: {
+          items: 1,
+          nav: true
+        },
+        600: {
+          items: 2,
+          nav: false
+        },
+        1000: {
+          items: 2,
+          nav: true,
+          loop: false,
+          margin: 0
+        }
+        ,
+        1300: {
+          items: 3,
+          nav: true,
+          loop: false,
+          margin: 10
+        }
+      }
+    });
+    $('.owl-carousel2').owlCarousel({
+      loop: true,
+      margin: 0,
+      responsiveClass: false,
+      responsive: {
+        0: {
+          items: 1,
+          nav: true
+        },
+        600: {
+          items: 2,
+          nav: false
+        },
+        1000: {
+          items: 2,
+          nav: true,
+          loop: false,
+          margin: 10
+        }
+        ,
+        1300: {
+          items: 3,
+          nav: true,
+          loop: false,
+          margin: 10
+        }
+      }
+    })
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 0,
+      responsiveClass: true,
+      responsive: {
+        0: {
+          items: 1,
+          nav: true
+        },
+        600: {
+          items: 2,
+          nav: false
+        },
+        1000: {
+          items: 3,
+          nav: true,
+          loop: false,
+          margin: 0
+        }
+        ,
+        1300: {
+          items: 4,
+          nav: true,
+          loop: false,
+          margin: 0
+        }
+      }
+    })
+  })
+  var array = [];
+  var markers = [];
+  var lat, lng;
+  var impactType, impactPlace;
+  if(document.cookie != ""){
+    array = JSON.parse(document.cookie);
+  }
+
+  function initMap() {
+
+      var myLatlng = {lat: 39.541719, lng: -101.315770};
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: myLatlng
+      });
+
+      var image = {
+        url: 'assets/Icons/Other/Network_Map_Pin.png',
+        // This marker is 20 pixels wide by 32 pixels high.
+        //size: new google.maps.Size(50, 50)
+        // The origin for this image is (0, 0).
+        //origin: new google.maps.Point(0, 0),
+        // The anchor for this image is the base of the flagpole at (0, 32).
+        //anchor: new google.maps.Point(0, 32)
+      };
+
+      for(var i = 0; i < array.length; i++){
+        markers[i] = new google.maps.Marker({
+          position: {lat: array[i][0], lng: array[i][1]},
+          map: map,
+          icon:image
+        });
+        listenerForI( i );
+      }
+      function listenerForI( i ) {
+        markers[i].addListener('click', function(){ editImpactArea(i); }, false);
+        //markers[i].addListener('dblick', function(){ clickMarker(i); },false);
+      }
+
+
+      map.addListener('click', function(e) {
+        $("#markerdoubleclick").modal();
+        lat = e.latLng.lat();
+        lng = e.latLng.lng();
+        $("#impactArea").val("");
+        $("#impactID").val("");
+        $( "#markerdoubleclick input:checked" ).val("");
+      });
+
+      $(".saveImpactArea").click(function() {
+        if($("#impactArea").val()==""){
+          $("#impactArea").focus();
+          $(".impacterror").text("Invaild Impact Area Value!");
+        }
+        else if($( "#markerdoubleclick input:checked" ).val() == undefined){
+          $(".impacterror").text("Invaild Impact Type Value!");
+        }
+        else{
+          if($("#impactID").val()==""){
+            array.push([lat, lng, $( "#markerdoubleclick input:checked" ).val(), $("#impactArea").val()]);
+          }
+          else{
+            array[$("#impactID").val()][2] = $("#markerdoubleclick input:checked").val();
+            array[$("#impactID").val()][3] = $("#impactArea").val();
+          }
+
+          document.cookie = JSON.stringify(array);
+          markers[array.length-1] = new google.maps.Marker({
+            position: {lat: lat, lng: lng},
+            map: map,
+            icon:image
+          });
+          listenerForI( array.length-1 );
+          $('#markerdoubleclick').modal('toggle');
+
+        }
+      });
+    }
+
+    function editImpactArea (markerInx){
+      $("#chicago").modal();
+      //lat = e.latLng.lat();
+      //lng = e.latLng.lng();
+      $("#impactArea").val(array[markerInx][3]);
+      $("#impactID").val(markerInx);
+      $( "#markerdoubleclick input:checked" ).val("");
+    }
+
+    function clickMarker(markerInx){
+      $("#markerdoubleclick").modal();
+      $("#impactArea").val(array[markerInx][3]);
+      $('input[name="radio-group3"][value="' + array[markerInx][2] + '"]').prop('checked', true);
+      //$("#markerdoubleclick input:checked" ).val(array[markerInx][2]);
+      $("#impactID").val(markerInx);
+    }
+  </script>
+-->
+
+</body>
+</html>
